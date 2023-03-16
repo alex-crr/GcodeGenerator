@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCODE Generator</title>
+    
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" type="text/css" href="StartGCODE.css">
+  </head>
+  <body>    
+    <div class="container container-titre" id="titreContainer"><h1 id="titre">Start GCODE Generator</h1></div>
+    <div class="container">      
+      <div class="sidebarRight" id="sidebarRight">
+        <h3>Useful Links</h3>
+        <ul>
+          <li><a href="#">Documentation</a>
+            <ul>
+              <li><a href="#">Getting Started</a></li>
+              <li><a href="#">API Reference</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Tutorials</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <main class="content">
+        <p>The main goal of the Start GCODE is to prime your 3D-Printer to be able to start the printing process the best way possible. 
+          This tool will allow you to configure it and copy the generated GCODE to your clipboard. For readability purpose, I'll try to include 
+          as much explanation during the generation process, and comments in the GCODE.
+        </p>
+        <section id="warning">
+          <p>This was developed for MArlin and Cura, and machines with one hotend only. If you're setup does not correpond, you will have to tweak you GCODE after.</p>
+          <p>Always check an internet configuration before using it in your prints. I'm in no way liable for damage that may be caused by misuse of the generated commands.</p>
+        </section><br> 
+        <form>
+          <h2>Configuration</h2>
+          <section id="machine-settings">
+            <h3>Machine settings</h3>
+            <p>In this section, we'll define your machine settings to be used later. Please keep in mind that all units are metric (millimeters and celsius degrees), and that this tool works for rectangular or squared shaped bed for the moment.</p>
+            
+            <h4>G20/G21 - Units</h4>
+            <p>By default they're set to millimeters (metric system). Ticking this checkbox will change them to inches (imperial system).</p>
+            <label for="units">Imperial units: <input type="checkbox" id="units" name="units" value="select-units" title="This feature is still under development" disabled ><br><br> </label>
+
+            <h4>Axis</h4>
+            <p>This defines the length of your axis. It'll be used to calculate the max postion that the hotend can reach.</p>
+            <label for="x-axis">X-axis size (mm): <input type="number" id="x-axis" name="x-axis" value="220" min="100" max="600" step="5"></label>          
+            <label for="y-axis">Y-axis size (mm): <input type="number" id="y-axis" name="y-axis" value="220" min="100" max="600" step="5"></label> <br>
+            <label for="custom-margin">Custom margins (mm): <input type="number" id="custom-margin" name="custom-margin" value="10" min="0" max="100" step="5" title="Reduce buildplate size to accomodate for bed clips, ..."></label><br>        
+            <label for="retraction-length">Retraction length (mm): <input type = "number" name="retraction-length" id="retraction-length" value="1.0" min="0.0" max="15.0" step="0.1"><br><br></label>
+
+            <h4>Nozzle</h4>
+            <p>This defines your nozzle parameter and we'll be used to calculate the extrusion flow later on.</p>
+            <label for="nozzle-size">Nozzle diameter (mm): 
+              <select id="nozzle-size" name="nozzle-size">
+                <option value="0.1">0.1 mm</option>
+                <option value="0.15">0.15 mm</option>
+                <option value="0.2">0.2 mm</option>
+                <option value="0.25">0.25 mm</option>
+                <option value="0.3">0.3 mm</option>            
+                <option value="0.4" selected>0.4 mm</option>
+                <option value="0.5">0.5 mm</option>
+                <option value="0.6">0.6 mm</option>
+                <option value="0.8">0.8 mm</option>
+                <option value="1.0">1.0 mm</option>
+                <option value="1.2">1.2 mm</option>
+                <option value="1.5">1.5 mm</option>
+              </select>
+            </label>
+
+            <label for="layer-height">Layer height (mm): 
+              <select name="layer-height" id="layer-height">
+                <option value="0.15">0.15 mm</option>
+                <option value="0.2">0.2 mm</option>
+                <option value="0.3" selected >0.3 mm</option>
+                <option value="0.4">0.4 mm</option>
+                <option value="0.5">0.5 mm</option>
+              </select><br><br>
+            </label>
+
+            <label for="filament-diameter">Filament diameter (mm): 
+              <select name="filament-diameter" id="filament-diameter">
+                <option value="1.75" selected >1.75 mm</option>
+                <option value="2.85">2.85 mm</option>
+              </select><br><br>
+            </label>
+          </section>
+          
+          <section id="thermal-settings">
+            <h3>Thermal settings</h3>
+            <h4>Nozzle temperature</h4>          
+            <label for="nozzle-temp-slicer">Let slicer decide: <input type="checkbox" id="nozzle-temp-slicer" name="nozzle-temp-slicer" value="slicer-decide-nozzle-temp" checked><br></label>
+            <label for="nozzle-temp-settings" id="nozzle-temp-settings-label">Set nozzle temperature: <input type="number" id="nozzle-temp-settings" name="nozzle-temp-settings"></label><br>
+            
+            <h4>Bed temperature</h4>          
+            <label for="bed-temp-slicer">Let slicer decide:</label>
+            <input type="checkbox" id="bed-temp-slicer" name="bed-temp-slicer" value="slicer-decide-bed-temp" checked><br>
+            <label for="bed-temp-settings" id="bed-temp-settings-label">Set bed temperature: <input type="number" id="bed-temp-settings" name="bed-temp-settings"></label><br>
+          </section>
+          
+          <section id="bed-alignment">
+            <h3>Bed alignment</h3>
+            <p>This section aims at calibrating your bed for it to be as flat as possible. The axis will be homed before, starting with X and Y, then Z.</p>
+  
+            <h4>G34 - Z-axis alignment</h4>
+            <p>The G34 command can be ran only with a dual Z-axis setup at least, where each motor has it's own stepper driver. It also requires a probe or an edstop on each axis.</p>
+            <label for="g34">Perform G34:<input type="checkbox" id="g34" name="g34" value="perform-g34"></label><br><br>
+            
+  
+            <h4>G29 - Bed leveling</h4>
+            <p>This part is dedicated to mesh bed leveling. It requires a probe.</p>
+            <label for="enable-mesh">Enable mesh bed: <input type="checkbox" id="enable-mesh" name="enable-mesh" value="enable-mesh-bed"></label><br>
+            <section id="mesh-settings">
+              <section class="invisible-section" id="perform-mesh-section">
+                <h5>M420 - Load saved mesh</h5>
+                <label for="load-mesh">Load a previously saved mesh: <input type="checkbox" id="load-mesh" name="load-mesh" value="load-mesh-bed"></label><br><br>
+              </section>
+              <section class="invisible-section" id="ABL-section">
+                <h5>ABL</h5>
+                <label for="perform-mesh" id="perform-mesh-label">Perform the ABL routine: <input type="checkbox" id="perform-mesh" name="perform-mesh" value="perform-mesh-bed"></label><br><br>
+              </section>
+              
+            </section>
+    
+          
+          </section>
+          <section id="purge-section">
+            <h3>Nozzle purge</h3>
+
+            <label for="purge-line">Perform purge line: <input type="checkbox" id="purge-line" name="purge-line" value="perform-purge-line"></label><br>
+            <section class="invisible-section" id="purge-line-section">
+              <label for="length-purge-line" id="length-purge-line-label">Set length of line: <input type="number" id="length-purge-line" name="length-purge-line" value="25" min="1" title="If the length is greater than the safe limit of build volume, an error will be thrown."></label><br>
+              <label for="number-purge-line" id="number-purge-line-label">Set number of lines: <input type="number" id="number-purge-line" name="number-purge-line" value="1" min="1" max="2"></label><br>
+              <label for="purge-location">Select line location: 
+                <select id="purge-location" name="purge-location">
+                  <option value="front">Front</option>
+                  <option value="back">Back</option>
+                  <option value="left">Left</option>
+                  <option value="right">Right</option>
+                </select><br><br>
+              </label>
+            </section>
+
+            <label for="purge-blob">Perform purge blob: <input type="checkbox" id="purge-blob" name="purge-line" value="perform-purge-blob" disabled title="This feature is not yet supported."></label><br><br>
+            <label for="purge-blob-location-relative" id="purge-blob-location-relative-label">Select blob location: 
+              <select id="purge-blob-location-relative" name="purge-blob-location-relative" title="Select where the blob should be located relatively to the purge line.">
+                <option value="start">Start</option>
+                <option value="finish">Finish</option>
+              </select><br><br>
+            </label>
+
+            <label for="purge-blob-location-absolute" id="purge-blob-location-absolute-label">Select blob location: 
+              <select id="purge-blob-location-absolute" name="purge-blob-location-absolute" title="Select on which corner the blob should be located.">
+                <option value="top-right">Top-right corner</option>
+                <option value="top-left">Top-left corner</option>
+                <option value="bottom-right">Bottom-right corner</option>
+                <option value="bottom-left">Bottom-left corner</option>
+              </select><br><br>
+            </label>
+          </section>
+
+          <section id="custom-message-section">
+            <h3>Custom startup message</h3>
+            <label for="custom-message-checkbox" id="custom-message-checkbox-label">Display custom message during start: 
+              <input type="checkbox" id="custom-message-checkbox" name="custom-message-checkbox">
+            </label><br><br>
+            <label for="custom-message" id="custom-message-label">Type the message you'd like to be displayed during startup: 
+              <input type="text" id="custom-message" name="custom-message">
+            </label>
+          </section>
+
+        </form>
+        <button type="button" id="Copy">  Copy To Clipboard </button>
+      </main>
+      <div class="sidebarLeft">
+        <h3>Ads</h3>
+        <img src="https://via.placeholder.com/200x200" alt="Ad 1">
+        <img src="https://via.placeholder.com/200x200" alt="Ad 2">
+      </div>
+    </div>
+    <script src="smartify.js"></script>
+    <script src="generator.js"></script>
+  </body>
+</html>
