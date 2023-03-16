@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCODE Generator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>    
+    <div class="container container-titre" id="titreContainer"><h1>GCODE Generator</h1></div>
+    <div class="container">      
+      <div class="sidebarRight" id="sidebarRight">
+        <h3>Useful Links</h3>
+        <ul>
+          <li><a href="https://fullcontrol.xyz/#/models">FullControll</a></li>
+          <li><a href="#">Link 2</a></li>
+          <li><a href="#">Link 3</a></li>
+        </ul>
+      </div>
+      <main class="content">
+        <h2>Disclaimer</h2>
+        <p>This tool was first developed as a more interactive way to tailor a <a href="Start/StartGCODE.html">Start</a> and End Gcodes for your Marlin-flavoured machine. As always you should try and comprehend what the generated GCODE does before using it. I recommend you also check the <a href="https://marlinfw.org/meta/gcode/"> Marlin documentation</a> for more informations. </p>
+        <h2>What's GCODE?</h2>
+        <p>GCODE most commonly refers to the instructions given to a CNC-machine, a 3D-Printer in our case, to create, or print, a model. Most modern FDM-printers use this standard, although some instructions may vary between each firmware: in Marlin-flavoured GCODE, the instruction "G10" refers to a retraction, where as in Duet-flavoured GCODE, "G10" refers to the temperature of the toolhead.
+            There is of course some similarities between the versions: "G28" refers to the "homing" process of the 3D-Printer, where the different axis of the printer will try to find the endstop and determine the position accordingly.
+            Some instructions can be used with parameter, such as "G28X" will only home the X-axis of the printer. For more informations, you can always refer to the <a href="https://fr.wikipedia.org/wiki/Programmation_de_commande_num%C3%A9rique">Wikipedia page</a>, the <a href="https://docs.duet3d.com/User_manual/Reference/Gcodes">Duet's dictionnary</a>,
+            or the <a href="">RepRap Wiki</a>.
+        </p>
+      </main>
+      <div class="sidebarLeft">
+        <h3>Ads</h3>
+        <img src="https://via.placeholder.com/200x200" alt="Ad 1">
+        <img src="https://via.placeholder.com/200x200" alt="Ad 2">
+      </div>
+    </div>
+  </body>
+</html>
