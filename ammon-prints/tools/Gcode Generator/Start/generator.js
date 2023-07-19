@@ -178,8 +178,8 @@ function generateGCODE() {
       
       gcode += `G1 E${retractionLengthNumber} F500 ; Retract a little\n`;
 
-      var xMiddle = trunc(xAxisSize / 2);
-      var yMiddle = trunc(yAxisSize / 2);
+      var xMiddle = Math.trunc((xAxisSize / 2));
+      var yMiddle = Math.trunc((yAxisSize / 2));
 
       dX = Math.abs(xMiddle - xEnd);
       dY = Math.abs(yMiddle - yEnd);
