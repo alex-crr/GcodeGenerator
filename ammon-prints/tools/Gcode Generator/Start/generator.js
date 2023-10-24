@@ -88,72 +88,8 @@ function generateGCODE() {
 
 
   
-
-<<<<<<< Updated upstream
-      var extrusionLength = (purgeLineLengthNumber * nozzleSizeSelect * layerHeight) / (Math.PI * Math.pow(filamentDiameterSelect / 2, 2));
-      extrusionLength = parseFloat(extrusionLength.toFixed(2));
-
-      gcode += `G0 X${xStart} Y${yStart} F9000; move to the purge line starter\n`;
-      gcode += `G0 Z${layerHeight}; move to Z-heigth\n`;
-      gcode += "G92 E0; zero the extruded length\n";
-      gcode += `G0 X${xEnd} Y${yEnd} E${extrusionLength} F500; print purge line\n`
-      gcode += "G92 E0; zero the extruded length\n";
-
-      if (purgeLineNumber == 2) {
-        [xStart, xEnd] = [xEnd, xStart];
-        [yStart, yEnd] = [yEnd, yStart];
-        switch (purgeLineLocationSelect) {
-          case "front":
-            yStart += nozzleSizeSelect;
-            yEnd += nozzleSizeSelect;
-            break;
-          case "back":
-            yStart -= nozzleSizeSelect;
-            yEnd -= nozzleSizeSelect;
-            break;
-          case "right":
-            xStart += nozzleSizeSelect;
-            xEnd += nozzleSizeSelect;
-            break;
-          case "left":
-            xStart -= nozzleSizeSelect;
-            xEnd -= nozzleSizeSelect;
-            break;
-          default:
-            console.log("Purge line location: how the hell did you do that.");
-            break;
-        }
-
-        gcode += `G0 X${xStart} Y${yStart} F9000; move to the second purge line starter\n`;
-        gcode += `G0 Z${layerHeight}; move to Z-heigth\n`;
-        gcode += "G92 E0; zero the extruded length\n";
-        gcode += `G0 X${xEnd} Y${yEnd} E${extrusionLength} F500; print purge line\n`
-        gcode += "G92 E0; zero the extruded length\n";
-      }
-      
-      gcode += `G1 E${retractionLengthNumber} F500 ; Retract a little\n`;
-
-      var xMiddle = Math.trunc((xAxisSize / 2));
-      var yMiddle = Math.trunc((yAxisSize / 2));
-
-      dX = Math.abs(xMiddle - xEnd);
-      dY = Math.abs(yMiddle - yEnd);
-
-      
-    }
-
-
-    if (customMessageCheckbox) {
-      gcode += "M117 " + customMessage + "; Custom message\n";
-    }
-
-    gcode += ";\n; End of the Start GCODE\n;\n"
-
-    return gcode;
-=======
   if (customMessageCheckbox) {
     gcode += "M117 " + customMessage + "; Custom message\n";
->>>>>>> Stashed changes
   }
 
   gcode += "\n;\n; End of the Start GCODE\n;"
