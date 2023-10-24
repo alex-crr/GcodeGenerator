@@ -85,7 +85,106 @@ function generateGCODE() {
       gcode += "G29 ; Proceeds to do ABL\n"
     }
   }
+// Purge line
+gcode += "\n; Purge Line\n\n"
+if (purgeLineCheckbox) {
+  if ((purgeLineLocationSelect == "front" || purgeLineLocationSelect == "back") && purgeLineLengthNumber > xAxisSize - 2
+    * customMarginNumber) {
+    document.getElementById('length-purge-line').style.background = "red";
+    throw ("Purge line: the purge line length cannot be greater than the length of the axis it is situated on, minus a 10mm margin on each side.")
+  }
+  else if ((purgeLineLocationSelect == "right" || purgeLineLocationSelect == "left") && purgeLineLengthNumber > yAxisSize - 2 * customMarginNumber) {
+    document.getElementById('length-purge-line').style.background = "red";
+    throw ("Purge line: the purge line length cannot be greater than the length of the axis it is situated on, minus a 10mm margin on each side.")
+  }
+  else {
+    document.getElementById('length-purge-line').style.background = "white";
+    var xStart;
+    var yStart;
+    var xEnd;
+    var yEnd;
 
+    switch (purgeLineLocationSelect) {
+      case "front":
+        xStart = customMarginNumber;
+        yStart = customMarginNumber;
+        xEnd = xStart + purgeLineLengthNumber;
+        yEnd = yStart
+        break;
+      case "back":
+        xStart = customMarginNumber;
+        yStart = yAxisSize - customMarginNumber;
+        xEnd = xStart + purgeLineLengthNumber;
+        yEnd = yStart;
+        break;
+      case "right":
+        xStart = xAxisSize - customMarginNumber;
+        yStart = customMarginNumber;
+        xEnd = xStart;
+        yEnd = yStart + purgeLineLengthNumber;
+        break;
+      case "left":
+        xStart = customMarginNumber;
+        yStart = customMarginNumber;
+        xEnd = xStart;
+        yEnd = yStart + purgeLineLengthNumber;
+        break;
+      default:
+        console.log("Purge line location: how the hell did you do that.");
+        break;
+    }
+
+    var extrusionLength = (purgeLineLengthNumber * nozzleSizeSelect * layerHeight) / (Math.PI * Math.pow(filamentDiameterSelect / 2, 2));
+    extrusionLength = parseFloat(extrusionLength.toFixed(2));
+
+    gcode += `G0 X${xStart} Y${yStart} F9000; move to the purge line starter\n`;
+    gcode += `G0 Z${layerHeight}; move to Z-heigth\n`;
+    gcode += "G92 E0; zero the extruded length\n";
+    gcode += `G0 X${xEnd} Y${yEnd} E${extrusionLength} F500; print purge line\n`
+    gcode += "G92 E0; zero the extruded length\n";
+
+    if (purgeLineNumber == 2) {
+      [xStart, xEnd] = [xEnd, xStart];
+      [yStart, yEnd] = [yEnd, yStart];
+      switch (purgeLineLocationSelect) {
+        case "front":
+          yStart += nozzleSizeSelect;
+          yEnd += nozzleSizeSelect;
+          break;
+        case "back":
+          yStart -= nozzleSizeSelect;
+          yEnd -= nozzleSizeSelect;
+          break;
+        case "right":
+          xStart += nozzleSizeSelect;
+          xEnd += nozzleSizeSelect;
+          break;
+        case "left":
+          xStart -= nozzleSizeSelect;
+          xEnd -= nozzleSizeSelect;
+          break;
+        default:
+          console.log("Purge line location: how the hell did you do that.");
+          break;
+      }
+
+      gcode += `G0 X${xStart} Y${yStart} F9000; move to the second purge line starter\n`;
+      gcode += `G0 Z${layerHeight}; move to Z-heigth\n`;
+      gcode += "G92 E0; zero the extruded length\n";
+      gcode += `G0 X${xEnd} Y${yEnd} E${extrusionLength} F500; print purge line\n`
+      gcode += "G92 E0; zero the extruded length\n";
+    }
+    
+    gcode += `G1 E${retractionLengthNumber} F500 ; Retract a little\n`;
+
+    var xMiddle = Math.trunc(xAxisSize / 2);
+    var yMiddle = Math.trunc(yAxisSize / 2);
+
+    dX = Math.abs(xMiddle - xEnd);
+    dY = Math.abs(yMiddle - yEnd);
+
+  }
+  }
 
   
   if (customMessageCheckbox) {
